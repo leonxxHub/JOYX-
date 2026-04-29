@@ -1,0 +1,142 @@
+-- سكربت بواسطة خليفه العراقي
+local player = game.Players.LocalPlayer
+local char = player.Character or player.CharacterAdded:Wait()
+
+local gui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
+gui.Name = "FireColorGUI"
+
+-- زر فتح/إغلاق القائمة
+local toggleButton = Instance.new("TextButton", gui)
+toggleButton.Size = UDim2.new(0, 200, 0, 40)
+toggleButton.Position = UDim2.new(0, 10, 0.4, 0)
+toggleButton.Text = "سكربت نار من صنع خليفه"
+toggleButton.TextColor3 = Color3.new(0,0,0)
+toggleButton.Font = Enum.Font.SourceSansBold
+toggleButton.TextScaled = true
+toggleButton.BorderSizePixel = 0
+
+-- ريمبو للزر
+spawn(function()
+    while true do
+        for h = 0, 1, 0.01 do
+            toggleButton.BackgroundColor3 = Color3.fromHSV(h, 1, 1)
+            wait(0.05)
+        end
+    end
+end)
+
+-- الإطار الرئيسي
+local mainFrame = Instance.new("Frame", gui)
+mainFrame.Size = UDim2.new(0, 200, 0, 150)
+mainFrame.Position = UDim2.new(0.5, -100, 0.5, -75)
+mainFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+mainFrame.BorderSizePixel = 0
+mainFrame.Visible = false
+
+toggleButton.MouseButton1Click:Connect(function()
+    mainFrame.Visible = not mainFrame.Visible
+end)
+
+-- عنوان
+local title = Instance.new("TextLabel", mainFrame)
+title.Size = UDim2.new(1, 0, 0, 30)
+title.Text = "تفعي نار تحديث سكربت جديد"
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
+title.BackgroundTransparency = 1
+title.Font = Enum.Font.SourceSansBold
+title.TextScaled = true
+
+-- قائمة الألوان
+local colors = {
+    {Name="أحمر", Color=Color3.fromRGB(255,0,0)},
+    {Name="أخضر", Color=Color3.fromRGB(0,255,0)},
+    {Name="أزرق", Color=Color3.fromRGB(0,0,255)},
+    {Name="أبيض", Color=Color3.fromRGB(255,255,255)},
+    {Name="أسود", Color=Color3.fromRGB(0,0,0)},
+    {Name="أصفر", Color=Color3.fromRGB(255,255,0)},
+    {Name="بنفسجي", Color=Color3.fromRGB(128,0,128)},
+    {Name="ريـمبو", Color="rainbow"},
+}
+
+local currentIndex = 1
+local buttons = {}
+
+-- زر فوق
+local upButton = Instance.new("TextButton", mainFrame)
+upButton.Size = UDim2.new(0.3, 0, 0, 25)
+upButton.Position = UDim2.new(0.05, 0, 1, -25)
+upButton.Text = "▲"
+upButton.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
+upButton.TextColor3 = Color3.new(1,1,1)
+
+-- زر تحت
+local downButton = Instance.new("TextButton", mainFrame)
+downButton.Size = UDim2.new(0.3, 0, 0, 25)
+downButton.Position = UDim2.new(0.65, 0, 1, -25)
+downButton.Text = "▼"
+downButton.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
+downButton.TextColor3 = Color3.new(1,1,1)
+
+-- عرض 3 أزرار في كل مرة
+local visibleCount = 3
+
+local function updateButtons()
+    for _, b in pairs(buttons) do b:Destroy() end
+    buttons = {}
+
+    for i = 0, visibleCount - 1 do
+        local index = currentIndex + i
+        if colors[index] then
+            local btn = Instance.new("TextButton", mainFrame)
+            btn.Size = UDim2.new(0.9, 0, 0, 25)
+            btn.Position = UDim2.new(0.05, 0, 0, 35 + i * 30)
+            btn.Text = colors[index].Name
+            btn.BackgroundColor3 = (colors[index].Color ~= "rainbow") and colors[index].Color or Color3.fromRGB(255, 255, 255)
+            btn.TextColor3 = Color3.new(0,0,0)
+            btn.Font = Enum.Font.SourceSans
+            btn.TextScaled = true
+
+            btn.MouseButton1Click:Connect(function()
+                local existing = char:FindFirstChildOfClass("Fire")
+                if existing then existing:Destroy() end
+
+                local fire = Instance.new("Fire", char:WaitForChild("HumanoidRootPart"))
+                fire.Size = 10
+                fire.Heat = 25
+
+                if colors[index].Color == "rainbow" then
+                    spawn(function()
+                        while fire and fire.Parent do
+                            for h = 0, 1, 0.02 do
+                                fire.Color = Color3.fromHSV(h,1,1)
+                                fire.SecondaryColor = Color3.fromHSV(1-h,1,1)
+                                wait(0.05)
+                            end
+                        end
+                    end)
+                else
+                    fire.Color = colors[index].Color
+                    fire.SecondaryColor = colors[index].Color
+                end
+            end)
+
+            table.insert(buttons, btn)
+        end
+    end
+end
+
+upButton.MouseButton1Click:Connect(function()
+    if currentIndex > 1 then
+        currentIndex -= 1
+        updateButtons()
+    end
+end)
+
+downButton.MouseButton1Click:Connect(function()
+    if currentIndex + visibleCount - 1 < #colors then
+        currentIndex += 1
+        updateButtons()
+    end
+end)
+
+updateButtons()
