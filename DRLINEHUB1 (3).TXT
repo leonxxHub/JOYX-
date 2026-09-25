@@ -1,0 +1,1771 @@
+-- ==============================================
+-- 1. شاشة التحميل + الموسيقى
+-- ==============================================
+local TweenService = game:GetService("TweenService")
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
+
+-- Loading Screen GUI
+local LoadingGui = Instance.new("ScreenGui", PlayerGui)
+local Box = Instance.new("Frame", LoadingGui)
+Box.Size = UDim2.new(0, 300, 0, 150)
+Box.Position = UDim2.new(0.5, -150, 0.5, -75)
+Box.BackgroundColor3 = Color3.fromRGB(15, 20, 30)
+Instance.new("UICorner", Box).CornerRadius = UDim.new(0, 12)
+
+local Stroke = Instance.new("UIStroke", Box)
+Stroke.Thickness = 2.5
+Stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+task.spawn(function()
+    local hue = 0
+    while Box.Parent do
+        hue = hue + 0.003
+        if hue >= 1 then hue = 0 end
+        Stroke.Color = Color3.fromHSV(hue, 1, 1)
+        task.wait(0.01)
+    end
+end)
+
+local Logo = Instance.new("ImageLabel", Box)
+Logo.Size = UDim2.new(0, 65, 0, 65)
+Logo.Position = UDim2.new(0.5, -32.5, 0.1, 0)
+Logo.Image = "rbxassetid://76617368858441"
+Logo.BackgroundTransparency = 1
+
+local TextLabel = Instance.new("TextLabel", Box)
+TextLabel.Size = UDim2.new(1, 0, 0, 25)
+TextLabel.Position = UDim2.new(0, 0, 0.5, 0)
+TextLabel.BackgroundTransparency = 1
+TextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel.Font = Enum.Font.GothamBold
+TextLabel.TextSize = 14
+TextLabel.Text = "جاري التحميل ...."
+
+local BarContainer = Instance.new("Frame", Box)
+BarContainer.Size = UDim2.new(0.8, 0, 0, 8)
+BarContainer.Position = UDim2.new(0.1, 0, 0.7, 0)
+BarContainer.BackgroundColor3 = Color3.fromRGB(10, 15, 25)
+Instance.new("UICorner", BarContainer).CornerRadius = UDim.new(1, 0)
+
+local LoadingBar = Instance.new("Frame", BarContainer)
+LoadingBar.Size = UDim2.new(0, 0, 1, 0)
+LoadingBar.BackgroundColor3 = Color3.fromRGB(80, 150, 255)
+Instance.new("UICorner", LoadingBar).CornerRadius = UDim.new(1, 0)
+
+local PercentText = Instance.new("TextLabel", Box)
+PercentText.Size = UDim2.new(1, 0, 0, 20)
+PercentText.Position = UDim2.new(0, 0, 0.8, 0)
+PercentText.BackgroundTransparency = 1
+PercentText.TextColor3 = Color3.fromRGB(255, 255, 255)
+PercentText.Font = Enum.Font.Code
+PercentText.TextSize = 12
+PercentText.Text = "0%"
+
+-- الأغنية
+local Music = Instance.new("Sound", Box)
+Music.SoundId = "rbxassetid://138178180069464"
+Music:Play()
+
+local duration = 4
+local startTime = tick()
+
+task.spawn(function()
+    while true do
+        local elapsed = tick() - startTime
+        local progress = math.min(elapsed / duration, 1)
+        
+        LoadingBar.Size = UDim2.new(progress, 0, 1, 0)
+        PercentText.Text = math.floor(progress * 100) .. "%"
+        
+        if progress >= 1 then 
+            LoadingGui:Destroy()
+            loadMainScript()
+            break 
+        end
+        task.wait()
+    end
+end)
+
+-- ==============================================
+-- 2. السكربت الرئيسي (Starlight Hub + جميع الأزرار)
+-- ==============================================
+function loadMainScript()
+    local _7 = loadstring(game:HttpGet('https://api.lumi.new/v1/functions/p411936918378364928/getScript?id=69b47c6255502c3e6742f863'))()
+
+    workspace.FallenPartsDestroyHeight = -1 / 0
+
+    local _call9 = _7:MakeWindow({
+        LoadText = 'Carregando...',
+        SubTitle = 'FROM DRLINI',
+        Title = 'DRLINE Hub|V1 - Brookhaven RP 🏡',
+        Flags = 'starlightversaotestes',
+    })
+
+    _call9:AddMinimizeButton({
+        Button = {
+            BackgroundTransparency = 0,
+            Image = 'rbxassetid://130633648074677',
+        },
+        Corner = {
+            CornerRadius = UDim.new(35, 1),
+        },
+    })
+
+    local Players = game:GetService("Players")
+    local player = Players.LocalPlayer
+    local playerIcon = "rbxassetid://10600109012"
+
+    local success, content = pcall(function()
+        return Players:GetUserThumbnailAsync(player.UserId, Enum.ThumbnailType.HeadShot, Enum.ThumbnailSize.Size150x150)
+    end)
+
+    if success and content then
+        playerIcon = content
+    end
+
+    task.spawn(function()
+        task.wait(0.6)
+        pcall(function()
+            local coreGui = game:GetService("CoreGui")
+            local targetGui = nil
+            
+            for _, gui in pairs(coreGui:GetChildren()) do
+                if gui:IsA("ScreenGui") and gui:FindFirstChild("Title", true) then
+                    local t = gui:FindFirstChild("Title", true)
+                    if t and string.find(t.Text, "Starlight Hub") then
+                        targetGui = gui
+                        break
+                    end
+                end
+            end
+            
+            if not targetGui then
+                targetGui = player:FindFirstChild("PlayerGui")
+            end
+
+            if targetGui then
+                local foundLabel = nil
+                for _, v in pairs(targetGui:GetDescendants()) do
+                    if v:IsA("TextLabel") and string.find(v.Text, "أهلاً بك يا بطل") then
+                        foundLabel = v
+                        break
+                    end
+                end
+
+                if foundLabel then
+                    local parentFrame = foundLabel.Parent
+                    foundLabel.Size = UDim2.new(1, -65, 1, 0)
+                    foundLabel.Position = UDim2.new(0, 15, 0, 0)
+                    foundLabel.TextXAlignment = Enum.TextXAlignment.Left
+                    
+                    local img = Instance.new("ImageLabel")
+                    img.Name = "PlayerIconNextToText"
+                    img.Size = UDim2.new(0, 35, 0, 35)
+                    img.Position = UDim2.new(1, -50, 0.5, -17.5)
+                    img.BackgroundTransparency = 1
+                    img.Image = playerIcon
+                    img.Parent = parentFrame
+                    
+                    local round = Instance.new("UICorner")
+                    round.CornerRadius = UDim.new(1, 0)
+                    round.Parent = img
+                    
+                    local stroke = Instance.new("UIStroke")
+                    stroke.Color = Color3.fromRGB(255, 255, 255)
+                    stroke.Thickness = 1
+                    stroke.Parent = img
+                end
+            end
+        end)
+    end)
+
+    -- ==========================================
+    -- 1. تبويب المعلومات (تم التعديل هنا)
+    -- ==========================================
+    local Tab1 = _call9:MakeTab({"معلومات المطور", ""})
+    Tab1:AddSection("تمت برمجة السكربت بواسطة DRLINE")
+    -- تم حذف سطر "شكر خاص وتقدير الى المطور Trunks"
+    Tab1:AddSection("أهلاً بك  : " .. player.Name)
+
+    Tab1:AddButton({ Name = "اضغط هنا لنسخ يوزري في التليجرام", Callback = function() setclipboard('@DRLINE1') end })
+    Tab1:AddButton({ Name = "اضغط هنا  لنسخ قناه التليكرام ", Callback = function() setclipboard('@drlinehub') end })
+
+    -- ==========================================
+    -- 2. تبويب سكربتات عشوائية
+    -- ==========================================
+    local Tab2 = _call9:MakeTab({"سكربتات عشوائية", ""}) 
+
+    Tab2:AddSection({"سكربتات مفيدة"})
+    Tab2:AddButton({
+      Name = "سكربت ايمبوت",
+      Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/HomeMadeScripts/Camlock-aimlock/main/obf_Wxr6QgzF76G1y2Ch77KN4Zt5Nz0A6GIl61gitv3mRR2t3V103al5d0g26s4KY04r.lua.txt"))()
+    end
+    })
+    Tab2:AddButton({
+      Name = "سكربت طيران سيارات",
+      Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/ahmidd409/TrollX-V2/refs/heads/main/TrollXVfly.txt"))()
+    end
+    })
+    Tab2:AddButton({
+      Name = "سكربت طيران",
+      Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/ahmidd409/Orion/refs/heads/main/%D8%B3%D9%83%D8%B1%D8%A8%D8%AA%D9%8A%20%D9%85%D8%A7%D9%84%20%D8%B7%D9%8A%D8%B1%D8%A7%D9%86"))()
+    end
+    })
+    Tab2:AddButton({
+      Name = "سكربت يسوي فلنق للسيارات",
+      Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/ahmidd409/TrollX-V2/refs/heads/main/Vfly_TrollX.txt"))()
+    end
+    })
+    Tab2:AddButton({
+      Name = "سكربت شفت لوك ينطيك قفل شاشة",
+      Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/Sector9922/SECTOR-SHIFT-LOCK/main/SECTOR%20SHIFT%20LOCK"))()
+    end
+    })
+    Tab2:AddSection({"سكربتات اجنبية"})
+    Tab2:AddButton({
+      Name = "سكربت مشيات",
+      Callback = function()
+        loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-AFEM-14048"))()
+    end
+    })
+    Tab2:AddButton({
+      Name = "سكربت R4D",
+      Callback = function()
+        loadstring(game:HttpGet('https://raw.githubusercontent.com/M1ZZ001/BrookhavenR4D/main/Brookhaven%20R4D%20Script'))()
+    end
+    })
+    Tab2:AddButton({
+      Name = "سكربت روجيبس لجميع المابات",
+      Callback = function()
+        loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-rochips-universal-18294"))()
+    end
+    })
+    Tab2:AddButton({
+      Name = "سكربت تخريب",
+      Callback = function()
+        loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-New-Update-24681"))()
+      end
+    })
+    Tab2:AddButton({
+      Name = "سكربت الهلال | Scrpit Atomic",
+      Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/n0kc/AtomicHub/main/Map-Al-Biout.lua"))()
+      end
+    })
+    Tab2:AddButton({
+      Name = "سكربت SanderX",
+      Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/sXPiterXs1111/Sanderx3.25/main/sanderxv3.25.lua"))()
+      end
+    })
+    Tab2:AddButton({
+      Name = "سكربت رحمة",
+      Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/n0kc/AtomicHub/main/Map-Al-Biout.lua"))()
+      end
+    })
+    Tab2:AddButton({
+      Name = "سكربت R4D",
+      Callback = function()
+        loadstring(game:HttpGet('https://raw.githubusercontent.com/M1ZZ001/BrookhavenR4D/main/Brookhaven%20R4D%20Script'))()
+      end
+    })
+    Tab2:AddButton({
+      Name = "سكربت RealHub",
+      Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/Laelmano24/Rael-Hub/main/main.txt"))()
+      end
+    })
+    Tab2:AddButton({
+      Name = "سكربت تخريب",
+      Callback = function()
+        loadstring(game:HttpGet('https://raw.githubusercontent.com/TheDarkoneMarcillisePex/Other-Scripts/main/Brook%20Haven%20Gui'))()
+      end
+    })
+    Tab2:AddButton({
+      Name = "سكربت Premium",
+      Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/gjQUGX/DXVUSEW/refs/heads/main/Sunterium-Hub/DELTA"))()
+      end
+    })
+    Tab2:AddButton({
+      Name = "سكربت Mango",
+      Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/rogelioajax/lua/main/MangoHub", true))()
+      end
+    })
+    Tab2:AddButton({
+      Name = "سكربت شادو",
+      Callback = function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/realgengar/Brookhaven/refs/heads/main/Source.lua"))()
+      end
+    })
+    Tab2:AddButton({
+      Name = "سكربت Universal",
+      Callback = function()
+        loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-rochips-universal-18294"))()
+      end
+    })
+    Tab2:AddButton({
+      Name = "سكربت يطير او يقتل اي احد يطيرك",
+      Callback = function()
+    loadstring(game:HttpGet("https://scriptblox.com/raw/Universal-Script-FE-Fling-GUI-10927"))()
+      end
+    })
+
+    Tab2:AddButton({
+      Name = "سكربت محد يكدر يطيرك",
+      Callback = function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/zephyr10101/ignore-touchinterests/main/main",true))() 
+      end
+    })
+    Tab2:AddButton({
+      Name = "سكربت Infinity Yield ",
+      Callback = function()
+        loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
+      end
+    })
+    Tab2:AddButton({
+      Name = "سكربت تخريب",
+      Callback = function()
+        loadstring(game:HttpGet('https://raw.githubusercontent.com/TheDarkoneMarcillisePex/Other-Scripts/main/Brook%20Haven%20Gui'))()
+      end
+    })
+    Tab2:AddButton({
+      Name = "سكربت رحمة",
+      Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/n0kc/AtomicHub/main/Map-Al-Biout.lua"))()
+      end
+    })
+    Tab2:AddButton({
+      Name = "سكربت يسوي فلنق للسيارات",
+      Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/ahmidd409/TrollX-V2/refs/heads/main/Vfly_TrollX.txt"))()
+    end
+    }) 
+    Tab2:AddSection({"سكربتات صديقي Trollx"})
+    Tab2:AddButton({
+      Name = "سكربت نسخ سكنات",
+      Callback = function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/ahmidd409/-/refs/heads/main/CopyAvatar.txt"))()
+      end
+    })
+    Tab2:AddButton({
+      Name = "سكربت طيران سيارة",
+      Callback = function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/ahmidd409/TrollX-V2/refs/heads/main/Vfly_TrollX.txt"))()
+      end
+    })
+    Tab2:AddButton({
+      Name = "سكربت اغاني",
+      Callback = function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/ahmidd409/TrollX-V2/refs/heads/main/MusicTrollX.txt"))()
+      end
+    })
+    Tab2:AddButton({
+      Name = "سكربت التدمير",
+      Callback = function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/ahmidd409/TrollX-V2/refs/heads/main/HackerBrookhaven_TrollX.txt"))()
+      end
+    })
+
+    -- ==========================================
+    -- 3. تبويب الأغاني
+    -- ==========================================
+    local TabSongs = _call9:MakeTab({"الاغاني", ""})
+
+    TabSongs:AddSection("⚠️ تنبيه هام قبل التشغيل:")
+    TabSongs:AddSection("الرجاء قبل تشغيل الاغنية اعمل ريسيت عن طريق الضغط على الزر ادناه")
+    TabSongs:AddSection("bom dia meus manos")
+
+    TabSongs:AddButton({ Name = "الريسيت", Callback = function()
+        game.Players.LocalPlayer.Character.Humanoid.Health = 0
+    end })
+
+    TabSongs:AddSection("مـشـغـل الـاغـانـي الحر")
+
+    TabSongs:AddTextBox({
+        Name = "للسياره", Default = "", PlaceholderText = "ادخل الكود واضغط انتر",
+        Callback = function(Value)
+            game:GetService("ReplicatedStorage"):WaitForChild("RE"):WaitForChild("1NoMoto1rVehicle1s"):FireServer(unpack({[1] = "SkateBoard"}))
+            game:GetService("ReplicatedStorage"):WaitForChild("RE"):WaitForChild("1NoMoto1rVehicle1s"):FireServer(unpack({[1] = "PickingScooterMusicText", [2] = Value}))
+        end 
+    })
+
+    TabSongs:AddTextBox({
+        Name = "للسكوتر", Default = "", PlaceholderText = "ادخل الكود واضغط انتر",
+        Callback = function(Value)
+            game:GetService("ReplicatedStorage"):WaitForChild("RE"):WaitForChild("1NoMoto1rVehicle1s"):FireServer(unpack({[1] = "SkateBoard"}))
+            game:GetService("ReplicatedStorage"):WaitForChild("RE"):WaitForChild("1NoMoto1rVehicle1s"):FireServer(unpack({[1] = "PickingScooterMusicText", [2] = Value}))
+        end 
+    }) 
+
+    TabSongs:AddTextBox({
+        Name = "للبيت", Default = "", PlaceholderText = "ادخل الكود واضغط انتر",
+        Callback = function(input)
+            game:GetService("ReplicatedStorage"):WaitForChild("RE"):WaitForChild("1Player1sHous1e"):FireServer(unpack({[1] = "PickHouseMusicText", [2] = input}))
+        end
+    })
+
+    TabSongs:AddTextBox({
+        Name = "بدون جيم باس", Default = "", PlaceholderText = "ادخل الكود واضغط انتر",
+        Callback = function(Value)
+            game:GetService("ReplicatedStorage"):WaitForChild("RE"):WaitForChild("1NoMoto1rVehicle1s"):FireServer(unpack({[1] = "SkateBoard"}))
+            game:GetService("ReplicatedStorage"):WaitForChild("RE"):WaitForChild("1NoMoto1rVehicle1s"):FireServer(unpack({[1] = "PickingScooterMusicText", [2] = Value}))
+        end 
+    })
+
+    TabSongs:AddSection("قائمة العربي")
+
+    TabSongs:AddButton({ Name = "فورتنايت ببجي", Callback = function() game:GetService("ReplicatedStorage").RE:FindFirstChild("1NoMoto1rVehicle1s"):FireServer(unpack({[1] = "SkateBoard", [2] = "8671258578"})) end })
+    TabSongs:AddButton({ Name = "اغنيه في عالم", Callback = function() game:GetService("ReplicatedStorage").RE:FindFirstChild("1NoMoto1rVehicle1s"):FireServer(unpack({[1] = "SkateBoard", [2] = "125151253990122"})) end })
+    TabSongs:AddButton({ Name = "حزين", Callback = function() game:GetService("ReplicatedStorage").RE:FindFirstChild("1NoMoto1rVehicle1s"):FireServer(unpack({[1] = "SkateBoard", [2] = "135308045"})) end })
+    TabSongs:AddButton({ Name = "الحمدلله", Callback = function() game:GetService("ReplicatedStorage").RE:FindFirstChild("1NoMoto1rVehicle1s"):FireServer(unpack({[1] = "SkateBoard", [2] = "7609175072"})) end })
+    TabSongs:AddButton({ Name = "جاء الليل", Callback = function() game:GetService("ReplicatedStorage").RE:FindFirstChild("1NoMoto1rVehicle1s"):FireServer(unpack({[1] = "SkateBoard", [2] = "132182002773837"})) end })
+    TabSongs:AddButton({ Name = "السلام عليكم", Callback = function() game:GetService("ReplicatedStorage").RE:FindFirstChild("1NoMoto1rVehicle1s"):FireServer(unpack({[1] = "SkateBoard", [2] = "7038667176"})) end })
+    TabSongs:AddButton({ Name = "صدام", Callback = function() game:GetService("ReplicatedStorage").RE:FindFirstChild("1NoMoto1rVehicle1s"):FireServer(unpack({[1] = "SkateBoard", [2] = "8273849195"})) end })
+    TabSongs:AddButton({ Name = "ويه ويه", Callback = function() game:GetService("ReplicatedStorage").RE:FindFirstChild("1NoMoto1rVehicle1s"):FireServer(unpack({[1] = "SkateBoard", [2] = "1164198099"})) end })
+    TabSongs:AddButton({ Name = "حبيبي شنو في", Callback = function() game:GetService("ReplicatedStorage").RE:FindFirstChild("1NoMoto1rVehicle1s"):FireServer(unpack({[1] = "SkateBoard", [2] = "7657178494"})) end })
+    TabSongs:AddButton({ Name = "مصري حب", Callback = function() game:GetService("ReplicatedStorage").RE:FindFirstChild("1NoMoto1rVehicle1s"):FireServer(unpack({[1] = "SkateBoard", [2] = "93620598835551"})) end })
+    TabSongs:AddButton({ Name = "عراقي حزين", Callback = function() game:GetService("ReplicatedStorage").RE:FindFirstChild("1NoMoto1rVehicle1s"):FireServer(unpack({[1] = "SkateBoard", [2] = "80039364766636"})) end })
+    TabSongs:AddButton({ Name = "دبجه", Callback = function() game:GetService("ReplicatedStorage").RE:FindFirstChild("1NoMoto1rVehicle1s"):FireServer(unpack({[1] = "SkateBoard", [2] = "76698985299412"})) end })
+    TabSongs:AddButton({ Name = "مؤخرة سفينة", Callback = function() game:GetService("ReplicatedStorage").RE:FindFirstChild("1NoMoto1rVehicle1s"):FireServer(unpack({[1] = "SkateBoard", [2] = "4776398821"})) end })
+    TabSongs:AddButton({ Name = "ضراط", Callback = function() game:GetService("ReplicatedStorage").RE:FindFirstChild("1NoMoto1rVehicle1s"):FireServer(unpack({[1] = "SkateBoard", [2] = "4809574295"})) end })
+    TabSongs:AddButton({ Name = "عود قوي", Callback = function() game:GetService("ReplicatedStorage").RE:FindFirstChild("1NoMoto1rVehicle1s"):FireServer(unpack({[1] = "SkateBoard", [2] = "114157294180725"})) end })
+    TabSongs:AddButton({ Name = "عود حزين", Callback = function() game:GetService("ReplicatedStorage").RE:FindFirstChild("1NoMoto1rVehicle1s"):FireServer(unpack({[1] = "SkateBoard", [2] = "104085669063530"})) end })
+    TabSongs:AddButton({ Name = "يمني وين الوفاء", Callback = function() game:GetService("ReplicatedStorage").RE:FindFirstChild("1NoMoto1rVehicle1s"):FireServer(unpack({[1] = "SkateBoard", [2] = "116150415085902"})) end })
+    TabSongs:AddButton({ Name = "حزينه", Callback = function() game:GetService("ReplicatedStorage").RE:FindFirstChild("1NoMoto1rVehicle1s"):FireServer(unpack({[1] = "SkateBoard", [2] = "132378395114388"})) end })
+    TabSongs:AddButton({ Name = "سعودي حزين", Callback = function() game:GetService("ReplicatedStorage").RE:FindFirstChild("1NoMoto1rVehicle1s"):FireServer(unpack({[1] = "SkateBoard", [2] = "99123490695024"})) end })
+
+    TabSongs:AddSection("قائمة الفونك (Phonk)")
+
+    TabSongs:AddButton({ Name = "فـونـك 5×30", Callback = function() game:GetService("ReplicatedStorage").RE:FindFirstChild("1NoMoto1rVehicle1s"):FireServer(unpack({[1] = "SkateBoard"})); game:GetService("ReplicatedStorage").RE:FindFirstChild("1NoMoto1rVehicle1s"):FireServer(unpack({[1] = "PickingScooterMusicText", [2] = "73966367524216"})) end })
+    TabSongs:AddButton({ Name = "فـونـك عالـمي", Callback = function() game:GetService("ReplicatedStorage").RE:FindFirstChild("1NoMoto1rVehicle1s"):FireServer(unpack({[1] = "SkateBoard"})); game:GetService("ReplicatedStorage").RE:FindFirstChild("1NoMoto1rVehicle1s"):FireServer(unpack({[1] = "PickingScooterMusicText", [2] = "76578817848504"})) end })
+    TabSongs:AddButton({ Name = "فـونـك تـيك تـوك", Callback = function() game:GetService("ReplicatedStorage").RE:FindFirstChild("1NoMoto1rVehicle1s"):FireServer(unpack({[1] = "SkateBoard"})); game:GetService("ReplicatedStorage").RE:FindFirstChild("1NoMoto1rVehicle1s"):FireServer(unpack({[1] = "PickingScooterMusicText", [2] = "93218265275853"})) end })
+    TabSongs:AddButton({ Name = "فـونـك مـمتاز", Callback = function() game:GetService("ReplicatedStorage").RE:FindFirstChild("1NoMoto1rVehicle1s"):FireServer(unpack({[1] = "SkateBoard"})); game:GetService("ReplicatedStorage").RE:FindFirstChild("1NoMoto1rVehicle1s"):FireServer(unpack({[1] = "PickingScooterMusicText", [2] = "102402883551679"})) end })
+    TabSongs:AddButton({ Name = "فـونـك روسـي", Callback = function() game:GetService("ReplicatedStorage").RE:FindFirstChild("1NoMoto1rVehicle1s"):FireServer(unpack({[1] = "SkateBoard"})); game:GetService("ReplicatedStorage").RE:FindFirstChild("1NoMoto1rVehicle1s"):FireServer(unpack({[1] = "PickingScooterMusicText", [2] = "103066073385622"})) end })
+    TabSongs:AddButton({ Name = "فـونـك بـرازيـل", Callback = function() game:GetService("ReplicatedStorage").RE:FindFirstChild("1NoMoto1rVehicle1s"):FireServer(unpack({[1] = "SkateBoard"})); game:GetService("ReplicatedStorage").RE:FindFirstChild("1NoMoto1rVehicle1s"):FireServer(unpack({[1] = "PickingScooterMusicText", [2] = "75038862482887"})) end })
+    TabSongs:AddButton({ Name = "فـونـك هـنـدي", Callback = function() game:GetService("ReplicatedStorage").RE:FindFirstChild("1NoMoto1rVehicle1s"):FireServer(unpack({[1] = "SkateBoard"})); game:GetService("ReplicatedStorage").RE:FindFirstChild("1NoMoto1rVehicle1s"):FireServer(unpack({[1] = "PickingScooterMusicText", [2] = "91301048841024"})) end })
+    TabSongs:AddButton({ Name = "فـونـك جـهـنـمي", Callback = function() game:GetService("ReplicatedStorage").RE:FindFirstChild("1NoMoto1rVehicle1s"):FireServer(unpack({[1] = "SkateBoard"})); game:GetService("ReplicatedStorage").RE:FindFirstChild("1NoMoto1rVehicle1s"):FireServer(unpack({[1] = "PickingScooterMusicText", [2] = "96527800313172"})) end })
+    TabSongs:AddButton({ Name = "فـونـك اسـطوري", Callback = function() game:GetService("ReplicatedStorage").RE:FindFirstChild("1NoMoto1rVehicle1s"):FireServer(unpack({[1] = "SkateBoard"})); game:GetService("ReplicatedStorage").RE:FindFirstChild("1NoMoto1rVehicle1s"):FireServer(unpack({[1] = "PickingScooterMusicText", [2] = "115028690484951"})) end })
+    TabSongs:AddButton({ Name = "فـونـك الـتربيـة السيـئة", Callback = function() game:GetService("ReplicatedStorage").RE:FindFirstChild("1NoMoto1rVehicle1s"):FireServer(unpack({[1] = "SkateBoard"})); game:GetService("ReplicatedStorage").RE:FindFirstChild("1NoMoto1rVehicle1s"):FireServer(unpack({[1] = "PickingScooterMusicText", [2] = "91161894069716"})) end })
+    TabSongs:AddButton({ Name = "فينوم فونك", Callback = function() game:GetService("ReplicatedStorage").RE:FindFirstChild("1NoMoto1rVehicle1s"):FireServer(unpack({[1] = "SkateBoard"})); game:GetService("ReplicatedStorage").RE:FindFirstChild("1NoMoto1rVehicle1s"):FireServer(unpack({[1] = "PickingScooterMusicText", [2] = "8086734311"})) end })
+    TabSongs:AddButton({ Name = "فونك نادر", Callback = function() game:GetService("ReplicatedStorage").RE:FindFirstChild("1NoMoto1rVehicle1s"):FireServer(unpack({[1] = "SkateBoard"})); game:GetService("ReplicatedStorage").RE:FindFirstChild("1NoMoto1rVehicle1s"):FireServer(unpack({[1] = "PickingScooterMusicText", [2] = "4806290024"})) end })
+    TabSongs:AddButton({ Name = "فونك برازيلي / 1", Callback = function() game:GetService("ReplicatedStorage").RE:FindFirstChild("1NoMoto1rVehicle1s"):FireServer(unpack({[1] = "SkateBoard"})); game:GetService("ReplicatedStorage").RE:FindFirstChild("1NoMoto1rVehicle1s"):FireServer(unpack({[1] = "PickingScooterMusicText", [2] = "15689446096"})) end })
+    TabSongs:AddButton({ Name = "فونك برازيلي / 2", Callback = function() game:GetService("ReplicatedStorage").RE:FindFirstChild("1NoMoto1rVehicle1s"):FireServer(unpack({[1] = "SkateBoard"})); game:GetService("ReplicatedStorage").RE:FindFirstChild("1NoMoto1rVehicle1s"):FireServer(unpack({[1] = "PickingScooterMusicText", [2] = "111281710445018"})) end })
+    TabSongs:AddButton({ Name = "فونك دبجه", Callback = function() game:GetService("ReplicatedStorage").RE:FindFirstChild("1NoMoto1rVehicle1s"):FireServer(unpack({[1] = "SkateBoard"})); game:GetService("ReplicatedStorage").RE:FindFirstChild("1NoMoto1rVehicle1s"):FireServer(unpack({[1] = "PickingScooterMusicText", [2] = "87968531262747"})) end })
+    TabSongs:AddButton({ Name = "فونك ايضاً", Callback = function() game:GetService("ReplicatedStorage").RE:FindFirstChild("1NoMoto1rVehicle1s"):FireServer(unpack({[1] = "SkateBoard"})); game:GetService("ReplicatedStorage").RE:FindFirstChild("1NoMoto1rVehicle1s"):FireServer(unpack({[1] = "PickingScooterMusicText", [2] = "17422156627"})) end })
+    TabSongs:AddButton({ Name = "فوك ذس اس ثانكس", Callback = function() game:GetService("ReplicatedStorage").RE:FindFirstChild("1NoMoto1rVehicle1s"):FireServer(unpack({[1] = "SkateBoard"})); game:GetService("ReplicatedStorage").RE:FindFirstChild("1NoMoto1rVehicle1s"):FireServer(unpack({[1] = "PickingScooterMusicText", [2] = "9058205566"})) end })
+    TabSongs:AddButton({ Name = "فونك ناررر", Callback = function() game:GetService("ReplicatedStorage").RE:FindFirstChild("1NoMoto1rVehicle1s"):FireServer(unpack({[1] = "SkateBoard"})); game:GetService("ReplicatedStorage").RE:FindFirstChild("1NoMoto1rVehicle1s"):FireServer(unpack({[1] = "PickingScooterMusicText", [2] = "73966367524216"})) end })
+    TabSongs:AddButton({ Name = "فونك عام", Callback = function() game:GetService("ReplicatedStorage").RE:FindFirstChild("1NoMoto1rVehicle1s"):FireServer(unpack({[1] = "SkateBoard"})); game:GetService("ReplicatedStorage").RE:FindFirstChild("1NoMoto1rVehicle1s"):FireServer(unpack({[1] = "PickingScooterMusicText", [2] = "14145626412"})) end })
+    TabSongs:AddButton({ Name = "فونك حزين", Callback = function() game:GetService("ReplicatedStorage").RE:FindFirstChild("1NoMoto1rVehicle1s"):FireServer(unpack({[1] = "SkateBoard"})); game:GetService("ReplicatedStorage").RE:FindFirstChild("1NoMoto1rVehicle1s"):FireServer(unpack({[1] = "PickingScooterMusicText", [2] = "16662831858"})) end })
+    TabSongs:AddButton({ Name = "فونك روسي 2", Callback = function() game:GetService("ReplicatedStorage").RE:FindFirstChild("1NoMoto1rVehicle1s"):FireServer(unpack({[1] = "SkateBoard"})); game:GetService("ReplicatedStorage").RE:FindFirstChild("1NoMoto1rVehicle1s"):FireServer(unpack({[1] = "PickingScooterMusicText", [2] = "15689441943"})) end })
+    TabSongs:AddButton({ Name = "اغنية فونك / 1", Callback = function() game:GetService("ReplicatedStorage").RE:FindFirstChild("1NoMoto1rVehicle1s"):FireServer(unpack({[1] = "SkateBoard"})); game:GetService("ReplicatedStorage").RE:FindFirstChild("1NoMoto1rVehicle1s"):FireServer(unpack({[1] = "PickingScooterMusicText", [2] = "15689443663"})) end })
+    TabSongs:AddButton({ Name = "اغنيه فونك / 2", Callback = function() game:GetService("ReplicatedStorage").RE:FindFirstChild("1NoMoto1rVehicle1s"):FireServer(unpack({[1] = "SkateBoard"})); game:GetService("ReplicatedStorage").RE:FindFirstChild("1NoMoto1rVehicle1s"):FireServer(unpack({[1] = "PickingScooterMusicText", [2] = "16190782181"})) end })
+    TabSongs:AddButton({ Name = "اغنيه فونك / 3", Callback = function() game:GetService("ReplicatedStorage").RE:FindFirstChild("1NoMoto1rVehicle1s"):FireServer(unpack({[1] = "SkateBoard"})); game:GetService("ReplicatedStorage").RE:FindFirstChild("1NoMoto1rVehicle1s"):FireServer(unpack({[1] = "PickingScooterMusicText", [2] = "15689448519"})) end })
+    TabSongs:AddButton({ Name = "اغنيه فونك / 4", Callback = function() game:GetService("ReplicatedStorage").RE:FindFirstChild("1NoMoto1rVehicle1s"):FireServer(unpack({[1] = "SkateBoard"})); game:GetService("ReplicatedStorage").RE:FindFirstChild("1NoMoto1rVehicle1s"):FireServer(unpack({[1] = "PickingScooterMusicText", [2] = "7825702538"})) end })
+    TabSongs:AddButton({ Name = "اغنيه فونك نادره / 5", Callback = function() game:GetService("ReplicatedStorage").RE:FindFirstChild("1NoMoto1rVehicle1s"):FireServer(unpack({[1] = "SkateBoard"})); game:GetService("ReplicatedStorage").RE:FindFirstChild("1NoMoto1rVehicle1s"):FireServer(unpack({[1] = "PickingScooterMusicText", [2] = "71517955953236"})) end })
+
+    -- ==========================================
+    -- 4. تبويب التحكم باللاعب
+    -- ==========================================
+    local PlayerTab = _call9:MakeTab({"تعديل اللاعب", ""})
+
+    PlayerTab:AddSection("التحكم الحر (اكتب القيمة واضغط انتر)")
+
+    PlayerTab:AddTextBox({
+        Name = "تغيير السرعة (WalkSpeed)",
+        Default = "16",
+        PlaceholderText = "اكتب السرعة هنا...",
+        Callback = function(Value)
+            local num = tonumber(Value)
+            if num then
+                local char = game.Players.LocalPlayer.Character
+                local hum = char and char:FindFirstChildOfClass("Humanoid")
+                if hum then hum.WalkSpeed = num end
+            end
+        end
+    })
+
+    PlayerTab:AddTextBox({
+        Name = "تغيير القفز (JumpPower)",
+        Default = "50",
+        PlaceholderText = "اكتب قوة القفز هنا...",
+        Callback = function(Value)
+            local num = tonumber(Value)
+            if num then
+                local char = game.Players.LocalPlayer.Character
+                local hum = char and char:FindFirstChildOfClass("Humanoid")
+                if hum then 
+                    hum.UseJumpPower = true
+                    hum.JumpPower = num 
+                end
+            end
+        end
+    })
+
+    PlayerTab:AddSection("أزرار سريعة جاهزة")
+
+    PlayerTab:AddButton({ Name = "سرعة خارقة (100)", Callback = function()
+        local char = game.Players.LocalPlayer.Character
+        local hum = char and char:FindFirstChildOfClass("Humanoid")
+        if hum then hum.WalkSpeed = 100 end
+    end })
+
+    PlayerTab:AddButton({ Name = "قفزة خارقة (150)", Callback = function()
+        local char = game.Players.LocalPlayer.Character
+        local hum = char and char:FindFirstChildOfClass("Humanoid")
+        if hum then 
+            hum.UseJumpPower = true
+            hum.JumpPower = 150 
+        end
+    end })
+
+    PlayerTab:AddButton({ Name = "إعادة الخصائص الافتراضية", Callback = function()
+        local char = game.Players.LocalPlayer.Character
+        local hum = char and char:FindFirstChildOfClass("Humanoid")
+        if hum then 
+            hum.WalkSpeed = 16
+            hum.UseJumpPower = true
+            hum.JumpPower = 50 
+        end
+    end })
+
+    -- ==========================================
+    -- 5. تبويب الأجسام
+    -- ==========================================
+    local BodyTab = _call9:MakeTab({"الاجسام | Body", ""})
+    BodyTab:AddSection("قائمة اختيار الاجسام (Girls & Boys)")
+
+    BodyTab:AddDropdown({
+        Name = "اختار الجسم",
+        Options = {
+            "بنت - Blush Fashion", "بنت - Fashion Doll", "بنت - Modern Woman", 
+            "بنت - Chibi Doll", "بنت - Baddie Doll", "ولد - S15 Skinned", 
+            "ولد - Thin", "قزم - Mini Small", "تحول - Hamster"
+        },
+        Default = "بنت - Blush Fashion",
+        Callback = function(Value)
+            local args = {}
+            if Value == "بنت - Blush Fashion" then
+                args = {[1] = "CharacterChange", [2] = {[1] = 96491916349570, [2] = 76683091425509, [3] = 75159926897589, [4] = 1, [5] = 1, [6] = 1}, [3] = "YinHub"}
+            elseif Value == "بنت - Fashion Doll" then
+                args = {[1] = "CharacterChange", [2] = {[1] = 74302534603111, [2] = 76683091425509, [3] = 75159926897589, [4] = 1, [5] = 1, [6] = 1}, [3] = "YinHub"}
+            elseif Value == "بنت - Modern Woman" then
+                args = {[1] = "CharacterChange", [2] = {[1] = 124754866635882, [2] = 76683091425509, [3] = 75159926897589, [4] = 1, [5] = 1, [6] = 1}, [3] = "YinHub"}
+            elseif Value == "بنت - Chibi Doll" then
+                args = {[1] = "CharacterChange", [2] = {[1] = 96491916349570, [2] = 14854350570, [3] = 14854350451, [4] = 1, [5] = 1, [6] = 1}, [3] = "YinHub"}
+            elseif Value == "بنت - Baddie Doll" then
+                args = {[1] = "CharacterChange", [2] = {[1] = 101577365085156, [2] = 121017849910260, [3] = 111571034664628, [4] = 1, [5] = 1, [6] = 1}, [3] = "YinHub"}
+            elseif Value == "ولد - S15 Skinned" then
+                args = {[1] = "CharacterChange", [2] = {[1] = 17754346388, [2] = 1, [3] = 1, [4] = 1, [5] = 1, [6] = 1}, [3] = "YinHub"}
+            elseif Value == "ولد - Thin" then
+                args = {[1] = "CharacterChange", [2] = {[1] = 92757812011061, [2] = 99519402284266, [3] = 115905570886697, [4] = 1, [5] = 1, [6] = 1}, [3] = "YinHub"}
+            elseif Value == "قزم - Mini Small" then
+                args = {[1] = "CharacterChange", [2] = {[1] = 14579958702, [2] = 14579959062, [3] = 14579959191, [4] = 14579959249, [5] = 14579963667, [6] = 1}, [3] = "YinHub"}
+            elseif Value == "تحول - Hamster" then
+                args = {[1] = "CharacterChange", [2] = {[1] = 14898536974, [2] = 14898536957, [3] = 14898537277, [4] = 14898537300, [5] = 14898537292, [6] = 14898536975}, [3] = "YinHub"}
+            end
+            
+            if #args > 0 then
+                local rem = game:GetService("ReplicatedStorage"):FindFirstChild("RE")
+                if rem and rem:FindFirstChild("1Avata1rOrigina1l") then
+                    rem["1Avata1rOrigina1l"]:FireServer(unpack(args))
+                end
+            end
+        end
+    })
+
+    BodyTab:AddSection({"الأرجل"})
+    BodyTab:AddButton({
+        Name = " رجل مقطوعه للبنت ",
+        Callback = function()
+            local args = {
+                [1] = {
+                    [1] = 96491916349570;
+                    [2] = 76683091425509;
+                    [3] = 75159926897589;
+                    [4] = 139607718;
+                    [5] = 1;
+                    [6] = 1;
+                };
+            }
+            game:GetService("ReplicatedStorage"):WaitForChild("Remotes", 9e9):WaitForChild("ChangeCharacterBody", 9e9):InvokeServer(unpack(args))
+        end
+    })
+
+    BodyTab:AddButton({
+        Name = " رجل مقطوعه للولد ",
+        Callback = function()
+            local args = {
+                [1] = {
+                    [1] = 1;
+                    [2] = 1;
+                    [3] = 1;
+                    [4] = 139607718;
+                    [5] = 1;
+                    [6] = 1;
+                };
+            }
+            game:GetService("ReplicatedStorage"):WaitForChild("Remotes", 9e9):WaitForChild("ChangeCharacterBody", 9e9):InvokeServer(unpack(args))
+        end
+    })
+
+    BodyTab:AddButton({
+        Name = " رجل حديديه طويله ",
+        Callback = function()
+            local args = {
+                [1] = {
+                    [1] = 1;
+                    [2] = 1;
+                    [3] = 1;
+                    [4] = 17500249989;
+                    [5] = 1;
+                    [6] = 1;
+                };
+            }
+            game:GetService("ReplicatedStorage"):WaitForChild("Remotes", 9e9):WaitForChild("ChangeCharacterBody", 9e9):InvokeServer(unpack(args))
+        end
+    })
+
+    BodyTab:AddButton({
+        Name = " رجل العضام السوداء الطويله ",
+        Callback = function()
+            local args = {
+                [1] = {
+                    [1] = 1;
+                    [2] = 1;
+                    [3] = 1;
+                    [4] = 14547162578;
+                    [5] = 1;
+                    [6] = 1;
+                };
+            }
+            game:GetService("ReplicatedStorage"):WaitForChild("Remotes", 9e9):WaitForChild("ChangeCharacterBody", 9e9):InvokeServer(unpack(args))
+        end
+    })
+
+    BodyTab:AddButton({
+        Name = " رجل العضام البيضاء الطويله ",
+        Callback = function()
+            local args = {
+                [1] = {
+                    [1] = 1;
+                    [2] = 1;
+                    [3] = 1;
+                    [4] = 14580308646;
+                    [5] = 1;
+                    [6] = 1;
+                };
+            }
+            game:GetService("ReplicatedStorage"):WaitForChild("Remotes", 9e9):WaitForChild("ChangeCharacterBody", 9e9):InvokeServer(unpack(args))
+        end
+    })
+
+    BodyTab:AddButton({
+        Name = " رجل الرول ",
+        Callback = function()
+            local args = {
+                [1] = {
+                    [1] = 1;
+                    [2] = 1;
+                    [3] = 1;
+                    [4] = 3230472745;
+                    [5] = 3230470862;
+                    [6] = 1;
+                };
+            }
+            game:GetService("ReplicatedStorage"):WaitForChild("Remotes", 9e9):WaitForChild("ChangeCharacterBody", 9e9):InvokeServer(unpack(args))
+        end
+    })
+    BodyTab:AddSection({"الرؤوس"})
+    BodyTab:AddButton({
+        Name = " راس روبوت او فضائي ",
+        Callback = function()
+            local args = {
+                [1] = 3210773801;
+            }
+            game:GetService("ReplicatedStorage"):WaitForChild("Remotes", 9e9):WaitForChild("Wear", 9e9):InvokeServer(unpack(args))
+        end
+    })
+
+    BodyTab:AddButton({
+        Name = " راس مخفي ",
+        Callback = function()
+            local args = {
+                [1] = 134082579;
+            }
+            game:GetService("ReplicatedStorage"):WaitForChild("Remotes", 9e9):WaitForChild("Wear", 9e9):InvokeServer(unpack(args))
+        end
+    })
+
+    BodyTab:AddButton({
+        Name = " راس عيون زرقاء المخفي ",
+        Callback = function()
+            local args = {
+                [1] = 16580493236;
+            }
+            game:GetService("ReplicatedStorage"):WaitForChild("Remotes", 9e9):WaitForChild("Wear", 9e9):InvokeServer(unpack(args))
+        end
+    })
+
+    BodyTab:AddButton({
+        Name = " راس كوبي او الرول ",
+        Callback = function()
+            local args = {
+                [1] = 746767604;
+            }
+            game:GetService("ReplicatedStorage"):WaitForChild("Remotes", 9e9):WaitForChild("Wear", 9e9):InvokeServer(unpack(args))
+        end
+    })
+
+
+    BodyTab:AddSection({" اجسام اولاد وبنات"})
+
+
+    BodyTab:AddButton({
+        Name = "  جسم بنت خصر صغير  ",
+        Callback = function()
+            local args = {
+                [1] = {
+                    [1] = 96491916349570;
+                    [2] = 76683091425509;
+                    [3] = 75159926897589;
+                    [4] = 1;
+                    [5] = 1;
+                    [6] = 1;
+                };
+            }
+
+            game:GetService("ReplicatedStorage"):WaitForChild("Remotes", 9e9):WaitForChild("ChangeCharacterBody", 9e9):InvokeServer(unpack(args))
+        end
+    })
+
+    BodyTab:AddButton({
+        Name = "  جسم بنت خصر ضعيف  ",
+        Callback = function()
+            local args = {
+                [1] = {
+                    [1] = 74302534603111;
+                    [2] = 76683091425509;
+                    [3] = 75159926897589;
+                    [4] = 1;
+                    [5] = 1;
+                    [6] = 1;
+                };
+            }
+
+            game:GetService("ReplicatedStorage"):WaitForChild("Remotes", 9e9):WaitForChild("ChangeCharacterBody", 9e9):InvokeServer(unpack(args))
+        end
+    })
+
+    BodyTab:AddButton({
+        Name = "  جسم بنت رقم 1  ",
+        Callback = function()
+            local args = {
+                [1] = {
+                    [1] = 96491916349570;
+                    [2] = 14854350570;
+                    [3] = 14854350451;
+                    [4] = 1;
+                    [5] = 1;
+                    [6] = 1;
+                };
+            }
+
+            game:GetService("ReplicatedStorage"):WaitForChild("Remotes", 9e9):WaitForChild("ChangeCharacterBody", 9e9):InvokeServer(unpack(args))
+        end
+    })
+
+    BodyTab:AddButton({
+        Name = "  جسم بنت رقم 2  ",
+        Callback = function()
+            local args = {
+                [1] = {
+                    [1] = 16214246112;
+                    [2] = 16214249513;
+                    [3] = 16214251181;
+                    [4] = 1;
+                    [5] = 1;
+                    [6] = 1;
+                };
+            }
+
+            game:GetService("ReplicatedStorage"):WaitForChild("Remotes", 9e9):WaitForChild("ChangeCharacterBody", 9e9):InvokeServer(unpack(args))
+        end
+    })
+
+    BodyTab:AddButton({
+        Name = "  جسم بنت رقم 3  ",
+        Callback = function()
+            local args = {
+                [1] = {
+                    [1] = 15539008532;
+                    [2] = 15539008875;
+                    [3] = 15539008680;
+                    [4] = 15539008795;
+                    [5] = 15539011945;
+                    [6] = 1;
+                };
+            }
+
+            game:GetService("ReplicatedStorage"):WaitForChild("Remotes", 9e9):WaitForChild("ChangeCharacterBody", 9e9):InvokeServer(unpack(args))
+        end
+    })
+
+    BodyTab:AddButton({
+        Name = "  جسم بنت رقم 4  ",
+        Callback = function()
+            local args = {
+                [1] = {
+                    [1] = 14861800638;
+                    [2] = 14861800626;
+                    [3] = 14861801452;
+                    [4] = 14861800627;
+                    [5] = 14861801454;
+                    [6] = 1;
+                };
+            }
+
+            game:GetService("ReplicatedStorage"):WaitForChild("Remotes", 9e9):WaitForChild("ChangeCharacterBody", 9e9):InvokeServer(unpack(args))
+        end
+    })
+
+    BodyTab:AddButton({
+        Name = "  جسم ولد يجنن  ",
+        Callback = function()
+            local args = {
+                [1] = {
+                    [1] = 17754346388;
+                    [2] = 1;
+                    [3] = 1;
+                    [4] = 1;
+                    [5] = 1;
+                    [6] = 1;
+                };
+            }
+
+            game:GetService("ReplicatedStorage"):WaitForChild("Remotes", 9e9):WaitForChild("ChangeCharacterBody", 9e9):InvokeServer(unpack(args))
+        end
+    })
+
+    BodyTab:AddButton({
+        Name = "  جسم ولد ضعيف  ",
+        Callback = function()
+            local args = {
+                [1] = {
+                    [1] = 92757812011061;
+                    [2] = 99519402284266;
+                    [3] = 115905570886697;
+                    [4] = 1;
+                    [5] = 1;
+                    [6] = 1;
+                };
+            }
+
+            game:GetService("ReplicatedStorage"):WaitForChild("Remotes", 9e9):WaitForChild("ChangeCharacterBody", 9e9):InvokeServer(unpack(args))
+        end
+    })
+
+    BodyTab:AddButton({
+        Name = "  جسم ولد رول  ",
+        Callback = function()
+            local args = {
+                [1] = {
+                    [1] = 27112025;
+                    [2] = 27112039;
+                    [3] = 27112052;
+                    [4] = 3230472745;
+                    [5] = 3230470862;
+                    [6] = 1;
+                };
+            }
+
+            game:GetService("ReplicatedStorage"):WaitForChild("Remotes", 9e9):WaitForChild("ChangeCharacterBody", 9e9):InvokeServer(unpack(args))
+        end
+    })
+
+    BodyTab:AddButton({
+        Name = "  جسم ولد كوبي  ",
+        Callback = function()
+            local args = {
+                [1] = {
+                    [1] = 86499666;
+                    [2] = 27112039;
+                    [3] = 27112052;
+                    [4] = 27112068;
+                    [5] = 27112056;
+                    [6] = 1;
+                };
+            }
+
+            game:GetService("ReplicatedStorage"):WaitForChild("Remotes", 9e9):WaitForChild("ChangeCharacterBody", 9e9):InvokeServer(unpack(args))
+        end
+    })
+
+    BodyTab:AddButton({
+        Name = "  جسم ولد معضل  ",
+        Callback = function()
+            local args = {
+                [1] = {
+                    [1] = 18178775358;
+                    [2] = 18178775182;
+                    [3] = 18178775725;
+                    [4] = 18178777453;
+                    [5] = 18178775695;
+                    [6] = 1;
+                };
+            }
+
+            game:GetService("ReplicatedStorage"):WaitForChild("Remotes", 9e9):WaitForChild("ChangeCharacterBody", 9e9):InvokeServer(unpack(args))
+        end
+    })
+
+
+    BodyTab:AddSection({" اجسام القزم "})
+
+
+    BodyTab:AddButton({
+        Name = "  جسم القزم  ",
+        Callback = function()
+            local args = {
+                [1] = {
+                    [1] = 14579958702;
+                    [2] = 14579959062;
+                    [3] = 14579959191;
+                    [4] = 14579959249;
+                    [5] = 14579963667;
+                    [6] = 1;
+                };
+            }
+
+            game:GetService("ReplicatedStorage"):WaitForChild("Remotes", 9e9):WaitForChild("ChangeCharacterBody", 9e9):InvokeServer(unpack(args))
+        end
+    })
+
+    BodyTab:AddButton({
+        Name = "  جسم القزم المتوسط  ",
+        Callback = function()
+            local args = {
+                [1] = {
+                    [1] = 77813057823038;
+                    [2] = 135110043370135;
+                    [3] = 116607813654019;
+                    [4] = 138966229804486;
+                    [5] = 128961183894053;
+                    [6] = 1;
+                };
+            }
+
+            game:GetService("ReplicatedStorage"):WaitForChild("Remotes", 9e9):WaitForChild("ChangeCharacterBody", 9e9):InvokeServer(unpack(args))
+        end
+    })
+
+    BodyTab:AddButton({
+        Name = "  جسم القزم القصير  ",
+        Callback = function()
+            local args = {
+                [1] = {
+                    [1] = 120973199097564;
+                    [2] = 118345433416023;
+                    [3] = 112849465115864;
+                    [4] = 78321005147549;
+                    [5] = 106586789635639;
+                    [6] = 1;
+                };
+            }
+
+            game:GetService("ReplicatedStorage"):WaitForChild("Remotes", 9e9):WaitForChild("ChangeCharacterBody", 9e9):InvokeServer(unpack(args))
+        end
+    })
+
+    BodyTab:AddButton({
+        Name = "  جسم القزم المتوسط تقريباً  ",
+        Callback = function()
+            local args = {
+                [1] = {
+                    [1] = 126267841602936;
+                    [2] = 77530451194918;
+                    [3] = 123471958406889;
+                    [4] = 117042768644173;
+                    [5] = 131948590344338;
+                    [6] = 1;
+                };
+            }
+
+            game:GetService("ReplicatedStorage"):WaitForChild("Remotes", 9e9):WaitForChild("ChangeCharacterBody", 9e9):InvokeServer(unpack(args))
+        end
+    })
+
+    BodyTab:AddButton({
+        Name = "  جسم الهامستر  ",
+        Callback = function()
+            local args = {
+                [1] = {
+                    [1] = 14898536974;
+                    [2] = 14898536957;
+                    [3] = 14898537277;
+                    [4] = 14898537300;
+                    [5] = 14898537292;
+                    [6] = 14898536975;
+                };
+            }
+
+            game:GetService("ReplicatedStorage"):WaitForChild("Remotes", 9e9):WaitForChild("ChangeCharacterBody", 9e9):InvokeServer(unpack(args))
+        end
+    })
+
+    -- ==========================================
+    -- 6. تبويب ESP
+    -- ==========================================
+    local EspTab3 = _call9:MakeTab({"ESP", ""})
+    local NameEsp = false
+    local LineEsp = false
+
+    EspTab3:AddToggle({
+        Name = "ESP الأسماء", Default = false,
+        Callback = function(value) NameEsp = value end
+    })
+
+    EspTab3:AddToggle({
+        Name = "ESP الخطوط", Default = false,
+        Callback = function(value) LineEsp = value end
+    })
+
+    local RunService = game:GetService("RunService")
+    local Camera = workspace.CurrentCamera
+
+    RunService.RenderStepped:Connect(function()
+        for _, p in pairs(Players:GetPlayers()) do
+            if p ~= player and p.Character and p.Character:FindFirstChild("Head") then
+                local head = p.Character.Head
+                local pos, visible = Camera:WorldToViewportPoint(head.Position)
+                
+                if visible and NameEsp then
+                    local Billboard = head:FindFirstChild("DragonESP")
+                    if not Billboard then
+                        Billboard = Instance.new("BillboardGui")
+                        Billboard.Name = "DragonESP"
+                        Billboard.Size = UDim2.new(0,100,0,40)
+                        Billboard.AlwaysOnTop = true
+                        Billboard.Parent = head
+                        
+                        local Text = Instance.new("TextLabel")
+                        Text.Name = "TextLabel"
+                        Text.Size = UDim2.new(1,0,1,0)
+                        Text.BackgroundTransparency = 1
+                        Text.TextColor3 = Color3.new(1,1,1)
+                        Text.TextStrokeTransparency = 0
+                        Text.TextScaled = true
+                        Text.Parent = Billboard
+                    end
+                    Billboard.TextLabel.Text = p.Name
+                else
+                    if head:FindFirstChild("DragonESP") then
+                        head.DragonESP:Destroy()
+                    end
+                end
+            end
+        end
+    end)
+
+    -- ==========================================
+    -- 7. تبويب التخريب
+    -- ==========================================
+    local TabTrolling = _call9:MakeTab({"التخريب", ""})
+
+    local selectedPlayerName = nil
+    local playerNames = {}
+
+    for _, plr in ipairs(Players:GetPlayers()) do
+        if plr ~= player then
+            table.insert(playerNames, plr.Name)
+        end
+    end
+
+    TabTrolling:AddSection("قائمة اختيار الضحية")
+
+    local VictimDropdown = TabTrolling:AddDropdown({
+        Name = "اختر الضحية الأساسية",
+        Options = playerNames,
+        Default = playerNames[1] or "لا يوجد لاعبين",
+        Callback = function(Value)
+            selectedPlayerName = Value
+        end
+    })
+
+    TabTrolling:AddButton({
+        Name = "تحديث القائمة",
+        Callback = function()
+            local refreshNames = {}
+            for _, plr in ipairs(Players:GetPlayers()) do
+                if plr ~= player then
+                    table.insert(refreshNames, plr.Name)
+                end
+            end
+            if #refreshNames == 0 then table.insert(refreshNames, "لا يوجد لاعبين") end
+            VictimDropdown:SetOptions(refreshNames)
+            _call9:MakeNotifi({ Title = "تحديث القائمة", Text = "تم تحديث اللاعبين بنجاح!", Time = 3 })
+        end
+    })
+
+    -- دالة ذكية وموحدة لإدارة رسبون المركبات والتخريب بدون أخطاء
+    local function runVehicleTroll(vehicleType, vehicleName, spawnCFrame, isDrag)
+        if not selectedPlayerName or selectedPlayerName == "لا يوجد لاعبين" or selectedPlayerName == "" then
+            _call9:MakeNotifi({ Title = "خطأ", Text = "يرجى اختيار ضحية أولاً!", Time = 3 })
+            return
+        end
+
+        local targetPlayer = Players:FindFirstChild(selectedPlayerName)
+        if not (targetPlayer and targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart")) then
+            _call9:MakeNotifi({ Title = "خطأ", Text = "اللاعب المستهدف غير موجود أو ميت", Time = 3 })
+            return
+        end
+
+        local character = player.Character
+        local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+        local humanoidRootPart = character and character:FindFirstChild("HumanoidRootPart")
+        if not (character and humanoid and humanoidRootPart) then return end
+
+        -- حفظ المكان الأصلي للاعب وحالة التثبيت
+        local originalCFrame = humanoidRootPart.CFrame
+        local originalAnchored = humanoidRootPart.Anchored
+
+        _call9:MakeNotifi({ Title = "جاري التشغيل", Text = "يرجى الانتظار لحين جلب المركبة والركوب...", Time = 4 })
+
+        -- 1. انتقال سريع لمكان رسبون السيارات
+        humanoidRootPart.Anchored = false
+        humanoidRootPart.CFrame = spawnCFrame
+        task.wait(0.4)
+
+        -- 2. إرسال أمر رسبون السيارة للسيرفر
+        if vehicleType == "Boat" then
+            game:GetService("ReplicatedStorage"):WaitForChild("RE"):WaitForChild("1Ca1r"):FireServer("PickingBoat", vehicleName)
+        else
+            game:GetService("ReplicatedStorage"):WaitForChild("RE"):WaitForChild("1Ca1r"):FireServer("PickingCar", vehicleName)
+        end
+
+        -- الانتظار لظهور المركبة في الورك سبيس
+        local vehicle = nil
+        local vehicleNameInWorkspace = player.Name .. "Car"
+        for i = 1, 30 do
+            vehicle = workspace.Vehicles:FindFirstChild(vehicleNameInWorkspace)
+            if vehicle then break end
+            task.wait(0.1)
+        end
+
+        if not vehicle then
+            _call9:MakeNotifi({ Title = "خطأ", Text = "فشل في رسبون المركبة، حاول مجدداً", Time = 3 })
+            humanoidRootPart.CFrame = originalCFrame
+            return
+        end
+
+        -- 3. نظام ركوب تلقائي متكرر ومضمون داخل الكرسي
+        local seat = vehicle:FindFirstChildWhichIsA("VehicleSeat", true) or vehicle:FindFirstChildWhichIsA("Seat", true)
+        if seat then
+            local sitTimeout = tick()
+            while tick() - sitTimeout < 3 and not humanoid.Sit do
+                humanoidRootPart.CFrame = seat.CFrame
+                task.wait(0.1)
+            end
+        end
+
+        if not humanoid.Sit then
+            _call9:MakeNotifi({ Title = "خطأ", Text = "فشل في ركوب السيارة تلقائياً!", Time = 3 })
+            game:GetService("ReplicatedStorage"):WaitForChild("RE"):WaitForChild("1Ca1r"):FireServer("DeleteAllVehicles")
+            humanoidRootPart.CFrame = originalCFrame
+            return
+        end
+
+        -- 4. حلقة التخريب (اللاعب يظل جالس داخل السيارة والسيارة هي اللي تتحرك)
+        if isDrag then
+            -- نظام السحب المستمر خلف الضحية
+            local dragStart = tick()
+            while tick() - dragStart < 5 and humanoid.Sit do
+                if targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                    local targetPos = targetPlayer.Character.HumanoidRootPart.Position
+                    vehicle:SetPrimaryPartCFrame(CFrame.new(targetPos + Vector3.new(0, 1, 2)))
+                end
+                task.wait(0.05)
+            end
+        else
+            -- نظام القتل (خضخضة سريعة لدمج الضحية بالسيارة ثم رميه للمقبرة/البحر البارد)
+            local crazyStart = tick()
+            while tick() - crazyStart < 2 and humanoid.Sit do
+                if targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                    local targetPos = targetPlayer.Character.HumanoidRootPart.Position
+                    local offset = Vector3.new(math.random(-15, 15), math.random(-5, 5), math.random(-15, 15))
+                    vehicle:SetPrimaryPartCFrame(CFrame.new(targetPos + offset))
+                end
+                task.wait(0.04)
+            end
+            
+            -- إرسال الضحية إلى الإحداثيات البعيدة خارج الماب ليموت
+            local targetDestination = CFrame.new(-86.00, -224.27, 34.57)
+            vehicle:SetPrimaryPartCFrame(targetDestination)
+            task.wait(0.6)
+        end
+
+        -- 5. النزول، حذف السيارة، والعودة للمكان الأصلي بسلام
+        humanoid.Sit = false
+        humanoid:ChangeState(Enum.HumanoidStateType.GettingUp)
+        task.wait(0.1)
+
+        game:GetService("ReplicatedStorage"):WaitForChild("RE"):WaitForChild("1Ca1r"):FireServer("DeleteAllVehicles")
+        task.wait(0.2)
+
+        humanoidRootPart.CFrame = originalCFrame
+        humanoidRootPart.Anchored = originalAnchored
+        humanoid:ChangeState(Enum.HumanoidStateType.RunningNoPhysics)
+    end
+
+    TabTrolling:AddSection("القتلات المحدثة")
+
+    TabTrolling:AddButton({
+        Name = "القتل بالسفينه",
+        Callback = function()
+            runVehicleTroll("Boat", "MilitaryBoatFree", CFrame.new(634.18, -4.00, 1839.65), false)
+        end
+    })
+
+    TabTrolling:AddButton({
+        Name = "قتل بالباص",
+        Callback = function()
+            runVehicleTroll("Car", "SchoolBus", CFrame.new(1082.86, 76.00, -1125.20), false)
+        end 
+    })
+
+    TabTrolling:AddButton({
+        Name = "قتل بالسفينه الكبيره",
+        Callback = function()
+            runVehicleTroll("Boat", "PirateFree", CFrame.new(634.18, -4.00, 1839.65), false)
+        end
+    }) 
+
+    TabTrolling:AddSection("الفلنجات والسحب المحدثة")
+
+    TabTrolling:AddButton({
+        Name = "سحب بالباص",
+        Callback = function()
+            runVehicleTroll("Car", "SchoolBus", CFrame.new(1082.86, 76.00, -1125.20), true)
+        end
+    })
+
+    -- ==========================================
+    -- 8. تبويب التخريب V2
+    -- ==========================================
+    local TabTrolling2 = _call9:MakeTab({"التخريب V2", ""})
+
+    TabTrolling2:AddSection({" قتل كنبه"})
+
+    local Players = game:GetService('Players')
+    local lplayer = Players.LocalPlayer
+
+    function GetPlayer(String)
+        local Found = {}
+        local strl = String:lower()
+        if strl == "all" then
+            for _, v in pairs(Players:GetPlayers()) do
+                table.insert(Found, v)
+            end
+        elseif strl == "others" then
+            for _, v in pairs(Players:GetPlayers()) do
+                if v.Name ~= lplayer.Name then
+                    table.insert(Found, v)
+                end
+            end
+        elseif strl == "me" then
+            table.insert(Found, lplayer)
+        else
+            for _, v in pairs(Players:GetPlayers()) do
+                if v.Name:lower():sub(1, #String) == String:lower() then
+                    table.insert(Found, v)
+                end
+            end
+        end
+        return Found
+    end
+
+    local function isItemInInventory(itemName)
+        for _, item in pairs(lplayer.Backpack:GetChildren()) do
+            if item.Name == itemName then
+                return true
+            end
+        end
+        return false
+    end
+
+    local function equipItem(itemName)
+        local item = lplayer.Backpack:FindFirstChild(itemName)
+        if item then
+            lplayer.Character.Humanoid:EquipTool(item)
+        end
+    end
+
+    local function unequipItem(itemName)
+        local item = lplayer.Character:FindFirstChild(itemName)
+        if item then
+            item.Parent = lplayer.Backpack
+        end
+    end
+
+    local function ActiveAutoFling(targetPlayer)
+        if not isItemInInventory("Couch") then
+            local args = { [1] = "PickingTools", [2] = "Couch" }
+            game:GetService("ReplicatedStorage").RE:FindFirstChild("1Too1l"):InvokeServer(unpack(args))
+        end
+
+        equipItem("Couch")
+        getgenv().flingloop = true
+
+        while getgenv().flingloop do
+            local function flingloopfix()
+                local Players = game:GetService("Players")
+                local Player = Players.LocalPlayer
+                local AllBool = false
+
+                local SkidFling = function(TargetPlayer)
+                    local Character = Player.Character
+                    local Humanoid = Character and Character:FindFirstChildOfClass("Humanoid")
+                    local RootPart = Humanoid and Humanoid.RootPart
+                    local TCharacter = TargetPlayer.Character
+                    local THumanoid, TRootPart, THead, Accessory, Handle
+
+                    if TCharacter:FindFirstChildOfClass("Humanoid") then
+                        THumanoid = TCharacter:FindFirstChildOfClass("Humanoid")
+                    end
+                    if THumanoid and THumanoid.RootPart then
+                        TRootPart = THumanoid.RootPart
+                    end
+                    if TCharacter:FindFirstChild("Head") then
+                        THead = TCharacter.Head
+                    end
+                    if TCharacter:FindFirstChildOfClass("Accessory") then
+                        Accessory = TCharacter:FindFirstChildOfClass("Accessory")
+                    end
+                    if Accessory and Accessory:FindFirstChild("Handle") then
+                        Handle = Accessory.Handle
+                    end
+
+                    if Character and Humanoid and RootPart then
+                        if RootPart.Velocity.Magnitude < 50 then
+                            getgenv().OldPos = RootPart.CFrame
+                        end
+                        if THumanoid and THumanoid.Sit and not AllBool then
+                            unequipItem("Couch")
+                            getgenv().flingloop = false
+                            return
+                        end
+                        if THead then
+                            workspace.CurrentCamera.CameraSubject = THead
+                        elseif not THead and Handle then
+                            workspace.CurrentCamera.CameraSubject = Handle
+                        elseif THumanoid and TRootPart then
+                            workspace.CurrentCamera.CameraSubject = THumanoid
+                        end
+
+                        if not TCharacter:FindFirstChildWhichIsA("BasePart") then
+                            return
+                        end
+
+                        local FPos = function(BasePart, Pos, Ang)
+                            RootPart.CFrame = CFrame.new(BasePart.Position) * Pos * Ang
+                            Character:SetPrimaryPartCFrame(CFrame.new(BasePart.Position) * Pos * Ang)
+                            RootPart.Velocity = Vector3.new(9e7, 9e7 * 10, 9e7)
+                            RootPart.RotVelocity = Vector3.new(9e8, 9e8, 9e8)
+                        end
+
+                        local SFBasePart = function(BasePart)
+                            local TimeToWait = 2
+                            local Time = tick()
+                            local Angle = 0
+                            repeat
+                                if RootPart and THumanoid then
+                                    if BasePart.Velocity.Magnitude < 50 then
+                                        Angle = Angle + 100
+                                        FPos(BasePart, CFrame.new(0, 1.5, 0) + THumanoid.MoveDirection * BasePart.Velocity.Magnitude / 1.25, CFrame.Angles(math.rad(Angle), 0, 0))
+                                        task.wait()
+                                        FPos(BasePart, CFrame.new(0, -1.5, 0) + THumanoid.MoveDirection * BasePart.Velocity.Magnitude / 1.25, CFrame.Angles(math.rad(Angle), 0, 0))
+                                        task.wait()
+                                        FPos(BasePart, CFrame.new(2.25, 1.5, -2.25) + THumanoid.MoveDirection * BasePart.Velocity.Magnitude / 1.25, CFrame.Angles(math.rad(Angle), 0, 0))
+                                        task.wait()
+                                        FPos(BasePart, CFrame.new(-2.25, -1.5, 2.25) + THumanoid.MoveDirection * BasePart.Velocity.Magnitude / 1.25, CFrame.Angles(math.rad(Angle), 0, 0))
+                                        task.wait()
+                                        FPos(BasePart, CFrame.new(0, 1.5, 0) + THumanoid.MoveDirection, CFrame.Angles(math.rad(Angle), 0, 0))
+                                        task.wait()
+                                        FPos(BasePart, CFrame.new(0, -1.5, 0) + THumanoid.MoveDirection, CFrame.Angles(math.rad(Angle), 0, 0))
+                                        task.wait()
+                                    else
+                                        FPos(BasePart, CFrame.new(0, 1.5, THumanoid.WalkSpeed), CFrame.Angles(math.rad(90), 0, 0))
+                                        task.wait()
+                                        FPos(BasePart, CFrame.new(0, -1.5, -THumanoid.WalkSpeed), CFrame.Angles(0, 0, 0))
+                                        task.wait()
+                                        FPos(BasePart, CFrame.new(0, 1.5, THumanoid.WalkSpeed), CFrame.Angles(math.rad(90), 0, 0))
+                                        task.wait()
+                                        FPos(BasePart, CFrame.new(0, 1.5, TRootPart.Velocity.Magnitude / 1.25), CFrame.Angles(math.rad(90), 0, 0))
+                                        task.wait()
+                                        FPos(BasePart, CFrame.new(0, -1.5, -TRootPart.Velocity.Magnitude / 1.25), CFrame.Angles(0, 0, 0))
+                                        task.wait()
+                                        FPos(BasePart, CFrame.new(0, 1.5, TRootPart.Velocity.Magnitude / 1.25), CFrame.Angles(math.rad(90), 0, 0))
+                                        task.wait()
+                                        FPos(BasePart, CFrame.new(0, -1.5, 0), CFrame.Angles(math.rad(90), 0, 0))
+                                        task.wait()
+                                        FPos(BasePart, CFrame.new(0, -1.5, 0), CFrame.Angles(0, 0, 0))
+                                        task.wait()
+                                        FPos(BasePart, CFrame.new(0, -1.5 ,0), CFrame.Angles(math.rad(-90), 0, 0))
+                                        task.wait()
+                                        FPos(BasePart, CFrame.new(0, -1.5, 0), CFrame.Angles(0, 0, 0))
+                                        task.wait()
+                                    end
+                                else
+                                    break
+                                end
+                            until BasePart.Velocity.Magnitude > 500 or BasePart.Parent ~= TargetPlayer.Character or TargetPlayer.Parent ~= Players or not TargetPlayer.Character == TCharacter or THumanoid.Sit or Humanoid.Health <= 0 or tick() > Time + TimeToWait or getgenv().flingloop == false
+                        end
+
+                        workspace.FallenPartsDestroyHeight = 0/0
+                        local BV = Instance.new("BodyVelocity")
+                        BV.Name = "SpeedDoPai"
+                        BV.Parent = RootPart
+                        BV.Velocity = Vector3.new(9e8, 9e8, 9e8)
+                        BV.MaxForce = Vector3.new(1/0, 1/0, 1/0)
+                        Humanoid:SetStateEnabled(Enum.HumanoidStateType.Seated, false)
+
+                        if TRootPart and THead then
+                            if (TRootPart.CFrame.p - THead.CFrame.p).Magnitude > 5 then
+                                SFBasePart(THead)
+                            else
+                                SFBasePart(TRootPart)
+                            end
+                        elseif TRootPart and not THead then
+                            SFBasePart(TRootPart)
+                        elseif not TRootPart and THead then
+                            SFBasePart(THead)
+                        elseif not TRootPart and not THead and Accessory and Handle then
+                            SFBasePart(Handle)
+                        end
+                        BV:Destroy()
+                        Humanoid:SetStateEnabled(Enum.HumanoidStateType.Seated, true)
+                        workspace.CurrentCamera.CameraSubject = Humanoid
+
+                        repeat
+                            RootPart.CFrame = getgenv().OldPos * CFrame.new(0, .5, 0)
+                            Character:SetPrimaryPartCFrame(getgenv().OldPos * CFrame.new(0, .5, 0))
+                            Humanoid:ChangeState("GettingUp")
+                            table.foreach(Character:GetChildren(), function(_, x)
+                                if x:IsA("BasePart") then
+                                    x.Velocity, x.RotVelocity = Vector3.new(), Vector3.new()
+                                end
+                            end)
+                            task.wait()
+                        until (RootPart.Position - getgenv().OldPos.p).Magnitude < 25
+
+                        workspace.FallenPartsDestroyHeight = getgenv().FPDH
+                    end
+                end
+
+                if not Welcome then
+                    -- Mensagem de boas-vindas
+                end
+                getgenv().Welcome = true
+
+                if AllBool then
+                    for _, x in next, Players:GetPlayers() do
+                        SkidFling(x)
+                    end
+                end
+
+                if targetPlayer then
+                    SkidFling(targetPlayer)
+                end
+
+                task.wait()
+            end
+
+            wait()
+            pcall(flingloopfix)
+        end
+    end
+
+    local FlingAdvancedPlayerList = {}
+    local playerDropdown
+
+    local function UMupdatePlayerList()
+        FlingAdvancedPlayerList = {}
+        for _, player in ipairs(Players:GetPlayers()) do
+            table.insert(FlingAdvancedPlayerList, player.Name)
+        end
+        if playerDropdown then
+            playerDropdown:Refresh(FlingAdvancedPlayerList, true)
+        end
+    end
+
+    local function teleportToPlayer(playerName)
+        local player = Players:FindFirstChild(playerName)
+        local localPlayer = Players.LocalPlayer
+
+        if player and player.Character and localPlayer.Character and localPlayer.Character:FindFirstChild("HumanoidRootPart") then
+            local targetPosition = player.Character.HumanoidRootPart.Position
+            localPlayer.Character:MoveTo(targetPosition)
+            print("Teletransportado para o jogador alvo.")
+        else
+            print("NÃ£o foi possÃ­vel encontrar o jogador alvo ou o HumanoidRootPart.")
+        end
+    end
+
+    UMupdatePlayerList()
+
+    TabTrolling2:AddDropdown({
+        Name = "اختار اسم الاعب",
+        Default = "",
+        Options = FlingAdvancedPlayerList,
+        Callback = function(value)
+            SelectedPlayer = value
+        end    
+    })
+
+    TabTrolling2:AddButton({
+        Name = "تحديث القائمة ",
+        Callback = function()
+            UMupdatePlayerList()
+        end    
+    })
+
+    local flingToggle
+
+    TabTrolling2:AddToggle({
+        Name = " تخريب كنبة",
+        Default = false,
+        Callback = function(state)
+            if state then
+                if SelectedPlayer then
+                    local targetPlayer = GetPlayer(SelectedPlayer)[1]
+                    if targetPlayer then
+                        ActiveAutoFling(targetPlayer)
+                    end
+                end
+            else
+                getgenv().flingloop = false
+            end
+        end    
+    })
+
+    game:GetService("Players").LocalPlayer.Character.Humanoid:GetPropertyChangedSignal("Sit"):Connect(function()
+        if lplayer.Character.Humanoid.Sit then
+            if flingToggle then
+                flingToggle:Set(false)
+            end
+        end
+    end)
+          
+
+    TabTrolling2:AddSection( {"قتل باص"})
+     local noclipEnabled = false
+    local runService = game:GetService("RunService")
+
+    -- Função para definir CanCollide para todas as partes do personagem
+    local function setCharacterCanCollide(character, canCollide)
+        for _, part in ipairs(character:GetDescendants()) do
+            if part:IsA("BasePart") then
+                part.CanCollide = canCollide
+            end
+        end
+    end
+
+    -- Função de callback para o botão de alternância de Noclip
+    local function onNoclipToggle(value)
+        noclipEnabled = value
+        print("Noclip Enabled:", noclipEnabled)
+        
+        local player = game.Players.LocalPlayer
+        local character = player.Character
+
+        if noclipEnabled then
+            -- Inicia um loop para continuamente definir CanCollide
+            noclipLoop = runService.Stepped:Connect(function()
+                if character then
+                    setCharacterCanCollide(character, false)
+                end
+            end)
+        else
+            -- Desativa o loop e restaura CanCollide
+            if noclipLoop then
+                noclipLoop:Disconnect()
+            end
+            if character then
+                setCharacterCanCollide(character, true)
+            end
+        end
+    end
+
+    -- ==========================================
+    -- 9. تبويب الموارد
+    -- ==========================================
+    local GiveTab = _call9:MakeTab({"الموارد", "Ω"})
+    GiveTab:AddParagraph({"بـالـتـحـديـثـات الـقـادمـة سـيـتـم اضـافـة الـاكـثـر", "bom dia meus manos"})
+    GiveTab:AddButton({
+    Name = "كـرسـتـال / 1",
+    Callback = function()
+    local args = {
+        [1] = "PickingTools",
+        [2] = "Crystal"
+    }
+
+    game:GetService("ReplicatedStorage").RE:FindFirstChild("1Too1l"):InvokeServer(unpack(args))
+    end
+    })
+    GiveTab:AddButton({
+    Name = "كـرسـتـال / 2",
+    Callback = function()
+    local args = {
+        [1] = "PickingTools",
+        [2] = "Crystals"
+    }
+
+    game:GetService("ReplicatedStorage").RE:FindFirstChild("1Too1l"):InvokeServer(unpack(args))
+    end
+    })
+    GiveTab:AddButton({
+        Name = "إعطاء كنبة (Couch)",
+        Callback = function()
+            local args = { [1] = "PickingTools", [2] = "Couch" }
+            
+            local success, err = pcall(function()
+                game:GetService("ReplicatedStorage").RE:FindFirstChild("1Too1l"):InvokeServer(unpack(args))
+            end)
+            
+            if success then
+                _call9:MakeNotifi({ Title = "تم بنجاح", Text = "تم استلام الكنبة!", Time = 2 })
+            else
+                _call9:MakeNotifi({ Title = "خطأ", Text = "فشل في الحصول على الكنبة", Time = 2 })
+            end
+        end
+    })
+    GiveTab:AddSection({"اشـيـاء تـبـيـن بـس لـك"})
+    GiveTab:AddButton({
+    Name = "يـضـرب راچـدي",
+    Callback = function()
+     loadstring(game:HttpGet(('http://pastefy.app/GvnHVjT5/raw'),true))()
+    end
+    })
+    GiveTab:AddButton({
+    Name = "الـتـحـريـك الـذهـنـي",
+    Callback = function()
+     loadstring(game:HttpGet(('https://raw.githubusercontent.com/SAZXHUB/Control-update/main/README.md'),true))()
+    end
+    })
+    GiveTab:AddButton({
+    Name = "f3x",
+    Callback = function()
+     loadstring(game:GetObjects("rbxassetid://6695644299")[1].Source)()
+    end
+    })
+    GiveTab:AddButton({
+    Name = "مـعـدات الـبـنـاء",
+    Callback = function()
+     loadstring(game:HttpGet("https://raw.githubusercontent.com/err0r129/PqpHadesBlair/main/Bao.lua"))()
+    end
+    })
+    GiveTab:AddButton({
+    Name = "الـتـنـقـل",
+    Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/err0r129/KptHadesBlair/main/Bao.lua"))()
+    end
+    })
+    GiveTab:AddButton({
+    	Name = "مادري شنو",
+    	Callback = function()
+          	local args = {
+        [1] = "PickingTools",
+        [2] = "Taser"
+    }
+
+    game:GetService("ReplicatedStorage").RE:FindFirstChild("1Too1l"):InvokeServer(unpack(args))
+      	end    
+    })
+
+    GiveTab:AddButton({
+    Name = "اخـذ صـنـدوق",
+    Callback = function()
+     local args = {
+        [1] = "PickingTools",
+        [2] = "Box"
+    }
+
+    game:GetService("ReplicatedStorage").RE:FindFirstChild("1Too1l"):InvokeServer(unpack(args))
+    end
+    })
+    GiveTab:AddButton({
+    Name = "اخذ جيس ورقي",
+    Callback = function()
+     local args = {
+        [1] = "PickingTools",
+        [2] = "Paperbag"
+    }
+
+    game:GetService("ReplicatedStorage").RE:FindFirstChild("1Too1l"):InvokeServer(unpack(args))
+    end
+    })
+    GiveTab:AddSection({"مـوارد الـبـنـك"})
+    GiveTab:AddButton({
+    Name = "حـقـيـبـة بـتـكـويـن",
+    	Callback = function()
+    		local args = {
+        [1] = "PickingTools",
+        [2] = "DuffleBagBitcoin"
+    }
+
+    game:GetService("ReplicatedStorage").RE:FindFirstChild("1Too1l"):InvokeServer(unpack(args))
+    	end
+    })
+    GiveTab:AddButton({
+    Name = "حـقـيـبـة الـالـمـاس",
+    	Callback = function()
+    		local args = {
+        [1] = "PickingTools",
+        [2] = "DuffleBagDiamonds"
+    }
+
+    game:GetService("ReplicatedStorage").RE:FindFirstChild("1Too1l"):InvokeServer(unpack(args))
+    	end
+    })
+    GiveTab:AddButton({
+    Name = "حـقـيـبـة الـذهـب",
+    	Callback = function()
+    		local args = {
+        [1] = "PickingTools",
+        [2] = "DuffleBagGold"
+    }
+
+    game:GetService("ReplicatedStorage").RE:FindFirstChild("1Too1l"):InvokeServer(unpack(args))
+    	end
+    })
+    GiveTab:AddButton({
+    Name = "بـطـاقـة جـاتـا كـي كارد",
+    	Callback = function()
+    		local args = {
+        [1] = "PickingTools",
+        [2] = "BankGateKey"
+    }
+
+    game:GetService("ReplicatedStorage").RE:FindFirstChild("1Too1l"):InvokeServer(unpack(args))
+    	end
+    })
+    GiveTab:AddButton({
+      Name = "بـطـاقـة جـاتـا كـي كارد بـيـضـاء",
+    	Callback = function()
+    		local args = {
+        [1] = "PickingTools",
+        [2] = "KeyCardWhite"
+    }
+
+    game:GetService("ReplicatedStorage").RE:FindFirstChild("1Too1l"):InvokeServer(unpack(args))
+    	end
+    })
+end
