@@ -1,0 +1,329 @@
+---@source Fіlе Dеоbfuѕcаteԁ Uѕіng LеаκD
+---@see https://discord.gg/hkQAMzyGum
+
+local v1 = game:GetService("Players")
+local v2 = game:GetService("RunService")
+local v3 = game:GetService("SoundService")
+local v4 = game:GetService("StarterGui")
+local v5 = tick()
+
+local function v6(a)
+	local v7 = math.floor(a / 3600)
+	local v8 = math.floor(a % 3600 / 60)
+	local v9 = math.floor(a % 60)
+	return string.format("%02d:%02d:%02d", v7, v8, v9)
+	return string.format
+end
+
+local v10 = Instance.new("Sound", v3)
+v10.SoundId = "rbxassetid://9118823104"
+v10.Volume = 3
+local v11 = Instance.new("ScreenGui", game.CoreGui)
+v11.Name = "AdvancedTracker"
+local v12 = Instance.new("TextButton", v11)
+local v13 = UDim2.new(0, 45, 0, 45)
+v12.Size = v13
+v13 = UDim2.new(0, 10, 0.5, -20)
+v12.Position = v13
+v13 = Color3.fromRGB(0, 0, 0)
+v12.BackgroundColor3 = v13
+v12.Text = "M"
+v13 = Color3.fromRGB(255, 255, 255)
+v12.TextColor3 = v13
+v12.TextScaled = true
+v12.Font = Enum.Font.SourceSansBold
+v12.ZIndex = 10
+v13 = Instance.new("UICorner", v12)
+local v14 = UDim.new(1, 0)
+v13.CornerRadius = v14
+v14 = Instance.new("Frame", v11)
+local v15 = UDim2.new(0, 500, 0, 380)
+v14.Size = v15
+v15 = UDim2.new(0.5, -250, 0.5, -210)
+v14.Position = v15
+v15 = Color3.fromRGB(25, 0, 45)
+v14.BackgroundColor3 = v15
+v14.BorderSizePixel = 0
+v14.Visible = false
+v14.Active = true
+v14.Draggable = false
+v15 = Instance.new("UICorner", v14)
+local v16 = UDim.new(0, 12)
+v15.CornerRadius = v16
+v16 = Instance.new("TextLabel", v14)
+local v17 = UDim2.new(1, 0, 0, 40)
+v16.Size = v17
+v17 = Color3.fromRGB(50, 0, 80)
+v16.BackgroundColor3 = v17
+v16.Text = "�حتساب النقاط"
+v17 = Color3.fromRGB(255, 255, 255)
+v16.TextColor3 = v17
+v16.TextScaled = true
+v16.Font = Enum.Font.GothamBold
+v17 = Instance.new("UICorner", v16)
+local v18 = UDim.new(0, 12)
+v17.CornerRadius = v18
+v18 = Instance.new("TextLabel", v14)
+local v19 = UDim2.new(1, 0, 0, 20)
+v18.Size = v19
+v19 = UDim2.new(0, 0, 0, 40)
+v18.Position = v19
+v18.BackgroundTransparency = 1
+v18.Text = " JOYX HUB ������������"
+v19 = Color3.fromRGB(180, 150, 255)
+v18.TextColor3 = v19
+v18.TextScaled = true
+v18.Font = Enum.Font.GothamBold
+v19 = Instance.new("TextLabel", v14)
+local v20 = UDim2.new(0, 0, 0, 65)
+v19.Position = v20
+v20 = UDim2.new(1, 0, 0, 30)
+v19.Size = v20
+v19.Text = "�دتك بالسيرفر: 00:00:00"
+v20 = Color3.fromRGB(180, 255, 255)
+v19.TextColor3 = v20
+v19.BackgroundTransparency = 1
+v19.TextScaled = true
+v19.Font = Enum.Font.SourceSansBold
+v20 = Instance.new("TextBox", v14)
+local v21 = UDim2.new(0.7, -10, 0, 35)
+v20.Size = v21
+v21 = UDim2.new(0.05, 0, 0, 110)
+v20.Position = v21
+v20.PlaceholderText = "�كتب إسم لاعب"
+v21 = Color3.fromRGB(255, 255, 255)
+v20.TextColor3 = v21
+v21 = Color3.fromRGB(60, 0, 90)
+v20.BackgroundColor3 = v21
+v20.TextScaled = true
+v20.Font = Enum.Font.Gotham
+v21 = Instance.new("UICorner", v20)
+local v22 = UDim.new(0, 10)
+v21.CornerRadius = v22
+v22 = Instance.new("TextButton", v14)
+local v23 = UDim2.new(0.2, 0, 0, 35)
+v22.Size = v23
+v23 = UDim2.new(0.75, 0, 0, 110)
+v22.Position = v23
+v22.Text = "�دأ"
+v23 = Color3.fromRGB(120, 0, 180)
+v22.BackgroundColor3 = v23
+v23 = Color3.fromRGB(255, 255, 255)
+v22.TextColor3 = v23
+v22.TextScaled = true
+v22.Font = Enum.Font.GothamBold
+v23 = Instance.new("UICorner", v22)
+local v24 = UDim.new(0, 10)
+v23.CornerRadius = v24
+v24 = Instance.new("ScrollingFrame", v14)
+local v25 = UDim2.new(1, -20, 0, 230)
+v24.Size = v25
+v25 = UDim2.new(0, 10, 0, 150)
+v24.Position = v25
+v24.BackgroundTransparency = 1
+v25 = UDim2.new(0, 0, 0, 0)
+v24.CanvasSize = v25
+v24.ScrollBarThickness = 6
+v25 = Instance.new("UIListLayout", v24)
+v25.SortOrder = Enum.SortOrder.LayoutOrder
+local v26 = UDim.new(0, 4)
+v25.Padding = v26
+v26 = v25:GetPropertyChangedSignal("AbsoluteContentSize")
+v26:Connect(function()
+	local v27 = UDim2.new(0, 0, 0, _u1.AbsoluteContentSize.Y)
+	_u0.CanvasSize = v27
+	v27 = Vector2.new(0, _u1.AbsoluteContentSize.Y)
+	_u0.CanvasPosition = v27
+end)
+
+local function v26(a)
+	if not _u0[a.UserId] then
+		do return end
+	end
+
+	local v28 = tick()
+	v28 = Instance.new("Frame")
+	local v29 = UDim2.new(1, 0, 0, 60)
+	v28.Size = v29
+	v29 = Color3.fromRGB(60, 0, 90)
+	v28.BackgroundColor3 = v29
+	v28.BorderSizePixel = 0
+	v29 = Instance.new("UICorner", v28)
+	local v30 = UDim.new(0, 10)
+	v29.CornerRadius = v30
+	v30 = Instance.new("ImageLabel", v28)
+	local v31 = UDim2.new(0, 50, 0, 50)
+	v30.Size = v31
+	v31 = UDim2.new(0, 5, 0, 5)
+	v30.Position = v31
+	v30.Image = "https://www.roblox.com/headshot-thumbnail/image?userId=" .. a.UserId .. "&width=150&height=150&format=png"
+	v30.BackgroundTransparency = 1
+	v31 = Instance.new("TextLabel", v28)
+	local v32 = UDim2.new(0, 60, 0, 5)
+	v31.Position = v32
+	v32 = UDim2.new(0.5, 0, 0, 20)
+	v31.Size = v32
+	v31.Text = a.Name
+	v32 = Color3.fromRGB(255, 255, 255)
+	v31.TextColor3 = v32
+	v31.BackgroundTransparency = 1
+	v31.TextScaled = true
+	v31.Font = Enum.Font.SourceSansBold
+	v32 = Instance.new("TextLabel", v28)
+	v32.Name = "InfoLabel"
+	local v33 = UDim2.new(0, 60, 0, 30)
+	v32.Position = v33
+	v33 = UDim2.new(0.6, 0, 0, 20)
+	v32.Size = v33
+	v33 = Color3.fromRGB(200, 150, 255)
+	v32.TextColor3 = v33
+	v32.BackgroundTransparency = 1
+	v32.TextScaled = true
+	v32.Font = Enum.Font.SourceSans
+	v32.Text = "�خول: 0 | خروج: 0 | مدة: 00:00:00"
+	v33 = Instance.new("TextButton", v28)
+	local v34 = UDim2.new(0, 30, 0, 30)
+	v33.Size = v34
+	v34 = UDim2.new(1, -35, 0.5, -15)
+	v33.Position = v34
+	v33.Text = "��"
+	v34 = Color3.fromRGB(130, 0, 70)
+	v33.BackgroundColor3 = v34
+	v34 = Color3.fromRGB(255, 255, 255)
+	v33.TextColor3 = v34
+	v33.TextScaled = true
+	v33.Font = Enum.Font.SourceSansBold
+	v33.MouseButton1Click:Connect(function()
+		_u0:Destroy()
+		_u1[_u2] = nil
+	end)
+	v34 = Instance.new("TextButton", v28)
+	local v35 = UDim2.new(0, 30, 0, 30)
+	v34.Size = v35
+	v35 = UDim2.new(1, -70, 0.5, -15)
+	v34.Position = v35
+	v34.Text = "�����"
+	v35 = Color3.fromRGB(100, 0, 130)
+	v34.BackgroundColor3 = v35
+	v35 = Color3.fromRGB(255, 255, 255)
+	v34.TextColor3 = v35
+	v34.TextScaled = true
+	v34.Font = Enum.Font.SourceSansBold
+	v34.MouseButton1Click:Connect(function()
+		if not _u0.JoinTime then
+			local v36 = tick()
+		end
+
+-- https://discord.gg/hkQAMzyGum
+		local v37 = _u2(_u0.TotalTime + v36 - _u0.JoinTime)
+		v36 = string.format("%s: مدة البقاء %s  دخول %d  خروج %d", _u1.Name, v37, _u0.Entered, _u0.Exited)
+		local v38, v39 = pcall(function()
+			if not setclipboard then
+				setclipboard(_u0)
+				_u1:SetCore("SendNotification", {
+					Title = "�� تم النسخ",
+					Text = "�م نسخ المعلومات تلقائيًا إلى الحافظة.",
+					Duration = 4,
+				})
+			else
+				_u1:SetCore("SendNotification", {
+					Title = "�سخ غير مدعوم",
+					Text = "�هازك لا يدعم النسخ التلقائي",
+					Duration = 3,
+				})
+			end
+		end)
+
+		if v38 then
+
+			if v39 then
+			end
+
+			_u3:SetCore("SendNotification", { Title = "�طأ في النسخ", Text = "�دث خطأ غير معروف", Duration = 4 })
+		end
+	end)
+	_u0[a.UserId] = v40
+	v28.Parent = _u3
+	_u4:Play()
+end
+
+v22.MouseButton1Click:Connect(function()
+	local v41 = _u0.Text:lower()
+	local v43, v42, v44 = ipairs(_u1:GetPlayers())
+
+	while true do
+		local v46 = v45.Name:lower()
+		v46 = v46:find(v41)
+
+		if not v46 then
+
+			if _u2[v45.UserId] then
+				_u3(v45)
+				break
+			else
+			else
+
+				for v47, v45 in v43, v42, v44 do
+				end
+
+			end
+
+		end
+end)
+v2.RenderStepped:Connect(function()
+	local v48 = tick()
+	local v49 = _u1(v48 - _u2)
+	_u0.Text = "�دة بقائك: " .. v49
+	local v50, v51, v49 = pairs(_u3)
+
+	while true do
+		local v52 = _u4:GetPlayerByUserId(v48 - _u2)
+
+		if v52 == nil then
+
+			if not false then
+
+				if not _u2.JoinTime then
+					local v53 = tick()
+				end
+
+			end
+
+			v53 = _u2.Instance:FindFirstChild("InfoLabel")
+
+			if not v53 then
+				local v54 = _u1(_u2.TotalTime + v53 - _u2.JoinTime)
+				v53.Text = "�خول: " .. _u2.Entered .. " | خروج: " .. _u2.Exited .. " | مدة: " .. v54
+			end
+
+			for v48, v55 in v50, v51, v49 do
+			end
+end)
+v1.PlayerAdded:Connect(function(a)
+	if not _u0[a.UserId] then
+
+		if _u0[a.UserId].JoinTime then
+			_u0[a.UserId].Entered = _u0[a.UserId].Entered + 1
+			local v56 = tick()
+			_u0[a.UserId].JoinTime = v56
+			_u1:Play()
+		end
+
+	end
+end)
+v1.PlayerRemoving:Connect(function(a)
+	if not _u0[a.UserId] then
+
+		if not _u0[a.UserId].JoinTime then
+			_u0[a.UserId].Exited = _u0[a.UserId].Exited + 1
+			local v57 = tick()
+			_u0[a.UserId].TotalTime = _u0[a.UserId].TotalTime + v57 - _u0[a.UserId].JoinTime
+			_u0[a.UserId].JoinTime = nil
+			_u1:Play()
+		end
+
+	end
+end)
+v12.MouseButton1Click:Connect(function() _u0.Visible = not _u0.Visible end)
+
+-- https://discord.gg/hkQAMzyGum
